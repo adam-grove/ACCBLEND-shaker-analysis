@@ -1,0 +1,14 @@
+
+select 
+date_trunc(transaction_date ,week(MONDAY)) as week,
+transaction_date,
+config_sku,
+sum(item_quantity) as quantity,
+count(distinct transaction_id) as  unique_transactions
+from `data_marts.transaction_products` 
+where 1=1
+and transaction_date > "2025-01-01"
+and category_2 like '%PLASTIC SHAKER%'
+and country = "UK"
+and config_sku in ('ACCSHKCLASSCLR', 'ACCSHKMASS', 'ACCSLEAKCLR', 'ACCBLEND', 'ACCSLEAK')
+group by week,transaction_date, config_sku
