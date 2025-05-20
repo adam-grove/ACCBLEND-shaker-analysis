@@ -10,7 +10,7 @@ from `data_marts.transaction_products`
 where 1=1
 and transaction_date > "2025-01-01"
 and category_2 like '%PLASTIC SHAKER%'
-and country = "UK"
+-- and country = "UK"
 and config_sku in ('ACCSHKCLASSCLR', 'ACCSHKMASS', 'ACCSLEAKCLR', 'ACCBLEND', 'ACCSLEAK')
 -- and config_sku = "ACCBLEND"
 ),
@@ -23,7 +23,7 @@ string_agg(order_issue_type_name,"|") as order_issue_type_name,
 string_agg(item_quality_issue_type_name,"|") as item_quality_issue_type_name,
 count(distinct unique_complaint_code) as issues
 from `tpw-data-warehouse.data_marts.quality_issues`
-where order_issue_country = "UK" #and config_sku = "ACCBLEND"
+-- where order_issue_country = "UK" #and config_sku = "ACCBLEND"
 group by magento_order , config_sku
 )
 
