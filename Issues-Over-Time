@@ -20,6 +20,7 @@ select
 magento_order,
 config_sku,
 string_agg(order_issue_type_name,"|") as order_issue_type_name,
+string_agg(item_quality_issue_type_name,"|") as item_quality_issue_type_name,
 count(distinct unique_complaint_code) as issues
 from `tpw-data-warehouse.data_marts.quality_issues`
 where order_issue_country = "UK" #and config_sku = "ACCBLEND"
@@ -33,7 +34,8 @@ t1.transaction_id,
 t1.config_sku,
 t2.order_issue_type_name,
 t1.item_quantity,
-t2.issues
+t2.issues,
+t2.item_quality_issue_type_name
 from transactions t1
 left join quality_issues t2 
   on t1.transaction_id = t2.magento_order
