@@ -1,0 +1,40 @@
+with transactions as 
+(
+select 
+date_trunc(transaction_date ,week(MONDAY)) as week,
+transaction_date,
+transaction_id,
+config_sku,
+item_quantity
+from `data_marts.transaction_products` 
+where 1=1
+and transaction_date > "2025-01-01"
+and category_2 like '%PLASTIC SHAKER%'
+and country = "UK"
+and config_sku in ('ACCSHKCLASSCLR', 'ACCSHKMASS', 'ACCSLEAKCLR', 'ACCBLEND', 'ACCSLEAK')
+-- and config_sku = "ACCBLEND"
+),
+quality_issues as
+(
+select 
+magento_order,
+config_sku,
+string_agg(order_issue_type_name,"|") as order_issue_type_name,
+count(distinct unique_complaint_code) as issues
+from `tpw-data-warehouse.data_marts.quality_issues`
+where order_issue_country = "UK" #and config_sku = "ACCBLEND"
+group by magento_order , config_sku
+)
+
+select
+t1.week, 
+t1.transaction_date,
+t1.transaction_id,
+t1.config_sku,
+t2.order_issue_type_name,
+t1.item_quantity,
+t2.issues
+from transactions t1
+left join quality_issues t2 
+  on t1.transaction_id = t2.magento_order
+  and t1.config_sku = t2.config_sku
